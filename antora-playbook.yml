@@ -1,7 +1,7 @@
 site:
   title: Yoshihide Asciidoc Note
   url: https://github.com/YoshihideShirai/asciidoc-note
-  start_page: math::index.adoc
+  start_page: software::index.adoc
 content:
   sources:
   - url: https://github.com/YoshihideShirai/asciidoc-note
