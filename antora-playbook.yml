@@ -16,7 +16,13 @@ asciidoc:
     page-pagination: ''
   extensions:
   - asciidoctor-kroki
+antora:
+  extensions:
+  - require: '@antora/lunr-extension'
+    languages: [en, ja]
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
     snapshot: true
+  supplemental_files:
+  - /usr/local/share/.config/yarn/global/node_modules/@antora/lunr-extension/supplemental_ui
