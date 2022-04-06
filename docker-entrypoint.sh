@@ -1,5 +1,13 @@
 #!/bin/sh
 
+if [ -z $ANTORA_UID ]; then
+    ANTORA_UID=0
+fi
+
+if [ -z $ANTORA_GID ]; then
+    ANTORA_GID=0
+fi
+
 apk update
 apk add sudo
 
