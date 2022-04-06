@@ -1,0 +1,28 @@
+name: deploy
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Step with docker
+        uses: docker://antora:latest
+        env:
+          - ANTORA_UID=$(id -u)
+          - ANTORA_GID=$(id -g)
+        volumes:
+          - $PWD:/antora:Z
+        with:
+          entrypoint: /antora/docker-entrypoint.sh
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/site
