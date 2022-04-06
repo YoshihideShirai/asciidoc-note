@@ -16,7 +16,7 @@ jobs:
         uses: docker://antora/antora:latest
         with:
           args: antora-playbook.yml
-          entrypoint: /antora/docker-entrypoint.sh
+          entrypoint: /github/workspace/docker-entrypoint.sh
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
