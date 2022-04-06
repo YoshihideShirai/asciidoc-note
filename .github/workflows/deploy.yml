@@ -13,8 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Step with docker
-        uses: docker://antora:latest
+        uses: docker://antora/antora:latest
         with:
+          args: antora-playbook.yml
           entrypoint: /antora/docker-entrypoint.sh
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
