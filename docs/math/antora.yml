@@ -1,5 +1,6 @@
 name: math
 title: 数学ノート
+version: true
 asciidoc:
   attributes:
     source-language: asciidoc@
