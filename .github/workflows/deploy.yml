@@ -16,11 +16,6 @@ jobs:
         uses: docker://antora:latest
         with:
           entrypoint: /antora/docker-entrypoint.sh
-          env:
-            - ANTORA_UID=$(id -u)
-            - ANTORA_GID=$(id -g)
-          volumes:
-            - $PWD:/antora:Z
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
