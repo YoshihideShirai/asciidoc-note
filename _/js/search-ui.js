@@ -12,7 +12,10 @@
 
   function appendStylesheet (href) {
     if (!href) return
-    document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: href }))
+    var link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = href
+    document.head.appendChild(link)
   }
 
   function highlightText (doc, position) {
@@ -213,7 +216,7 @@
 
   function initSearch (lunr, data) {
     var start = performance.now()
-    var index = Object.assign({ index: lunr.Index.load(data.index), store: data.store })
+    var index = { index: lunr.Index.load(data.index), store: data.store }
     enableSearchInput(true)
     searchInput.dispatchEvent(
       new CustomEvent('loadedindex', {
