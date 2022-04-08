@@ -24,4 +24,5 @@ ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
     snapshot: true
-  supplemental_files: /usr/local/share/.config/yarn/global/node_modules/@antora/lunr-extension/supplemental_ui
+  supplemental_files: /npm/antora-lunr-extension/supplemental_ui
+#  supplemental_files: /usr/local/share/.config/yarn/global/node_modules/@antora/lunr-extension/supplemental_ui
