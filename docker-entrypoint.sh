@@ -16,6 +16,8 @@ apt-get install -y sudo git
 mkdir /npm
 cd /npm
 git clone -b bugfix-lunr-language-ja-doesnt-work https://gitlab.com/yoshihide.shirai/antora-lunr-extension.git
+cd antora-lunr-extension
+npm i
 cd $WORKDIR
 
 npm i -g @antora/cli @antora/site-generator @asciidoctor/core asciidoctor-kroki /npm/antora-lunr-extension/
