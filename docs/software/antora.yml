@@ -7,4 +7,5 @@ asciidoc:
     table-caption: false
 nav:
 - modules/ROOT/nav.adoc
+- modules/kroki/nav.adoc
 - modules/antora/nav.adoc
