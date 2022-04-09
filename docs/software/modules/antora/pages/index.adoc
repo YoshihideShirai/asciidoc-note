@@ -8,3 +8,15 @@
 https://gitlab.com/antora/antora-lunr-extension/-/issues/45
 
 issue登録と対策コードのMRを作った! さて、受け入れてもらえるか？？？
+
+== ui template
+
+* Antora Default UI +
+https://gitlab.com/antora/antora-ui-default
+* Cloudflow Default UI +
+https://github.com/lightbend/antora-ui-lightbend-cloud-theme
+
+== Antora Default UI Tips
+
+* Antora Default UI にサイズ可変な目次を実装する +
+https://note.com/chappy_dogheart/n/nce8e4a2b365c
