@@ -7,3 +7,4 @@ docker run \
     --workdir /antora \
     --rm -t --entrypoint=/antora/docker-entrypoint.sh node:lts-bullseye
 
+#    -v $PWD/../antora-lunr-extension:/npm/antora-lunr-extension \
