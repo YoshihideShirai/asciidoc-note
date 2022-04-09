@@ -1,0 +1,10 @@
+
+= Antora
+
+== antora-lunr-extension
+
+=== 日本語検索が出来ない・・・
+
+https://gitlab.com/antora/antora-lunr-extension/-/issues/45
+
+issue登録と対策コードのMRを作った! さて、受け入れてもらえるか？？？
