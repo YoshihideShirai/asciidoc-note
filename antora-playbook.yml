@@ -2,6 +2,8 @@ site:
   title: Yoshihide Asciidoc Note
   url: https://github.com/YoshihideShirai/asciidoc-note
   start_page: software::index.adoc
+  keys:
+    google_analytics: 'G-V38Y5TJ2SC'
 content:
   sources:
   - url: https://github.com/YoshihideShirai/asciidoc-note
