@@ -1,6 +1,6 @@
-# kroki
+# Kroki
 
-## krokiとは？
+## Krokiとは？
 
 https://kroki.io/
 
