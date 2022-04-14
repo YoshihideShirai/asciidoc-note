@@ -10,8 +10,7 @@ if [ -z $ANTORA_GID ]; then
     ANTORA_GID=0
 fi
 
-apt-get update
-apt-get install -y sudo git
+apk add sudo git
 
 if [ ! -d /npm/antora-lunr-extension ]; then
     mkdir /npm
@@ -22,7 +21,7 @@ if [ ! -d /npm/antora-lunr-extension ]; then
     cd $WORKDIR
 fi
 
-npm i -g @antora/cli @antora/site-generator @asciidoctor/core asciidoctor-kroki /npm/antora-lunr-extension/
+yarn global add asciidoctor-kroki /npm/antora-lunr-extension/
 # @antora/lunr-extension
 
 sudo -u#${ANTORA_UID} -g#${ANTORA_GID} antora antora-playbook.yml

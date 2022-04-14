@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Step with docker
-        uses: docker://node:lts-bullseye
+        uses: docker://antora/antora:3.0.1
         with:
           args: antora-playbook.yml
           entrypoint: /github/workspace/docker-entrypoint.sh
