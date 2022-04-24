@@ -6,9 +6,8 @@ site:
     google_analytics: 'G-V38Y5TJ2SC'
 content:
   sources:
-  - url: https://github.com/YoshihideShirai/asciidoc-note
-    branches: master
-    edit_url: true
+  - url: ./
+    branches: HEAD
     start_paths: docs/*
 asciidoc:
   attributes:
@@ -24,7 +23,7 @@ antora:
     languages: [en,ja]
 ui:
   bundle:
-    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    url: ./ui-bundle/
     snapshot: true
   supplemental_files: /npm/antora-lunr-extension/supplemental_ui
 #  supplemental_files: /usr/local/share/.config/yarn/global/node_modules/@antora/lunr-extension/supplemental_ui
