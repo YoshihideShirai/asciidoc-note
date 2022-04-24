@@ -20,3 +20,7 @@ https://github.com/lightbend/antora-ui-lightbend-cloud-theme
 
 * Antora Default UI にサイズ可変な目次を実装する +
 https://note.com/chappy_dogheart/n/nce8e4a2b365c
+
+== Emoji
+
+emoji:bear[5x]

@@ -1,5 +1,11 @@
 #!/bin/sh
 
+if [ -z "$1" ];then
+    PLAYBOOK="antora-playbook.yml"
+else
+    PLAYBOOK="$1"
+fi
+
 WORKDIR=$PWD
 
 if [ -z $ANTORA_UID ]; then
@@ -21,8 +27,8 @@ if [ ! -d /npm/antora-lunr-extension ]; then
     cd $WORKDIR
 fi
 
-yarn global add asciidoctor-kroki /npm/antora-lunr-extension/
+yarn global add asciidoctor-kroki /npm/antora-lunr-extension/ asciidoctor-emoji
 # @antora/lunr-extension
 
 sudo -u#${ANTORA_UID} -g#${ANTORA_GID} \
-    antora antora-playbook.yml
+    antora "${PLAYBOOK}"

@@ -1,4 +1,5 @@
 {
     "asciidoc.use_kroki": true,
     "asciidoc.preview.useEditorStyle": false,
+    "asciidoc.use_emoji": true,
 }
