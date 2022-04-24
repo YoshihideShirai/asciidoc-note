@@ -1,5 +1,7 @@
 {
     "asciidoc.use_kroki": true,
     "asciidoc.preview.useEditorStyle": false,
-    "asciidoc.use_emoji": true,
+    "asciidoc.asciidoctor_command": "/home/yoshihide/git/asciidoc-note/asciidoctor",
+    "asciidoc.use_asciidoctor_js": false,
+    "asciidoc.trace": "verbose",
 }

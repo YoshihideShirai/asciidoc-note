@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd $(dirname $0)
+
+./node_modules/@asciidoctor/cli/bin/asciidoctor \
+    -r asciidoctor-kroki \
+    -r asciidoctor-emoji \
+    $*

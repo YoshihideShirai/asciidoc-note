@@ -63,4 +63,3 @@ main_ts ==> (main.view)
 (main.view) ...> (singleton)
 (singleton) ---> (model)
 ....
-
