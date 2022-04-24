@@ -24,4 +24,5 @@ fi
 yarn global add asciidoctor-kroki /npm/antora-lunr-extension/
 # @antora/lunr-extension
 
-sudo -u#${ANTORA_UID} -g#${ANTORA_GID} antora antora-playbook.yml
+sudo -u#${ANTORA_UID} -g#${ANTORA_GID} \
+    antora antora-playbook.yml

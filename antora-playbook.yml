@@ -6,7 +6,7 @@ site:
     google_analytics: 'G-V38Y5TJ2SC'
 content:
   sources:
-  - url: ./
+  - url: https://github.com/YoshihideShirai/asciidoc-note.git
     branches: HEAD
     start_paths: docs/*
 asciidoc:
