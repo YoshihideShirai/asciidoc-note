@@ -1,6 +1,90 @@
 
 = Antora
 
+== Antoraって？
+
+asciidocで記述されたドキュメントの静的サイト生成ツール。
+
+https://gitlab.com/antora/antora
+
+== お勧めの使い方
+
+ディレクトリ構成と定義ファイルを次に示すとおり作れば最低限利用可能。
+
+=== リポジトリ構成
+
+----
+📒 [リポジトリ]
+  📄 antora-playbook.yml
+  📂 docs 
+    📂 [コンテンツ]
+      📄 antora.yml
+      📂 modules
+        📂 ROOT
+          📁 attachments
+          📁 examples
+          📁 images
+          📁 pages
+            📄 index.adoc
+          📁 partials
+          📄 nav.adoc
+        📂 [モジュール]
+          📁 attachments
+          📁 examples
+          📁 images
+          📁 pages
+            📄 index.adoc
+          📁 partials
+          📄 nav.adoc
+  📂 ui-bundle
+----
+
+=== 定義ファイルの記述
+
+.antora.yml
+[source,yaml]
+----
+name: [コンテンツ名]
+title: [コンテンツタイトル]
+version: true
+asciidoc:
+  attributes:
+    source-language: asciidoc@
+    table-caption: false
+nav:
+- modules/ROOT/nav.adoc
+----
+
+.antora-playbook.yml
+[source,yaml]
+----
+site:
+  title: [サイトのタイトル]
+  url: [サイトのURL]
+  start_page: [コンテンツ名]::index.adoc
+content:
+  sources:
+  - url: [git cloneできる URL]
+    branches: HEAD
+    start_paths: docs/*
+asciidoc:
+  attributes:
+    experimental: ''
+    idprefix: ''
+    idseparator: '-'
+    page-pagination: ''
+ui:
+  bundle:
+    url: ./ui-bundle/
+    snapshot: true
+----
+
+.nav.adoc
+[source,adoc]
+----
+* xref:index.adoc[]
+----
+
 == antora-lunr-extension
 
 === 日本語検索が出来ない・・・
