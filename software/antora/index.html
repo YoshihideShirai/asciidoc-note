@@ -107,6 +107,102 @@
 <article class="doc">
 <h1 class="page">Antora</h1>
 <div class="sect1">
+<h2 id="antoraって"><a class="anchor" href="#antoraって"></a>Antoraって？</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>asciidocで記述されたドキュメントの静的サイト生成ツール。</p>
+</div>
+<div class="paragraph">
+<p><a href="https://gitlab.com/antora/antora" class="bare">https://gitlab.com/antora/antora</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="お勧めの使い方"><a class="anchor" href="#お勧めの使い方"></a>お勧めの使い方</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ディレクトリ構成と定義ファイルを次に示すとおり作れば最低限利用可能。</p>
+</div>
+<div class="sect2">
+<h3 id="リポジトリ構成"><a class="anchor" href="#リポジトリ構成"></a>リポジトリ構成</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">📒 [リポジトリ]
+  📄 antora-playbook.yml
+  📂 docs
+    📂 [コンテンツ]
+      📄 antora.yml
+      📂 modules
+        📂 ROOT
+          📁 attachments
+          📁 examples
+          📁 images
+          📁 pages
+            📄 index.adoc
+          📁 partials
+          📄 nav.adoc
+        📂 [モジュール]
+          📁 attachments
+          📁 examples
+          📁 images
+          📁 pages
+            📄 index.adoc
+          📁 partials
+          📄 nav.adoc
+  📂 ui-bundle</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="定義ファイルの記述"><a class="anchor" href="#定義ファイルの記述"></a>定義ファイルの記述</h3>
+<div class="listingblock">
+<div class="title">antora.yml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">name: [コンテンツ名]
+title: [コンテンツタイトル]
+version: true
+asciidoc:
+  attributes:
+    source-language: asciidoc@
+    table-caption: false
+nav:
+- modules/ROOT/nav.adoc</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">antora-playbook.yml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">site:
+  title: [サイトのタイトル]
+  url: [サイトのURL]
+  start_page: [コンテンツ名]::index.adoc
+content:
+  sources:
+  - url: [git cloneできる URL]
+    branches: HEAD
+    start_paths: docs/*
+asciidoc:
+  attributes:
+    experimental: ''
+    idprefix: ''
+    idseparator: '-'
+    page-pagination: ''
+ui:
+  bundle:
+    url: ./ui-bundle/
+    snapshot: true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">nav.adoc</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-adoc hljs" data-lang="adoc">* xref:index.adoc[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="antora-lunr-extension"><a class="anchor" href="#antora-lunr-extension"></a>antora-lunr-extension</h2>
 <div class="sectionbody">
 <div class="sect2">
