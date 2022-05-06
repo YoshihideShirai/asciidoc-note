@@ -108,7 +108,7 @@
 <article class="doc">
 <h1 class="page">Kroki</h1>
 <div class="sect1">
-<h2 id="krokiとは"><a class="anchor" href="#krokiとは"></a>Krokiとは？</h2>
+<h2 id="krokiとは"><a class="anchor" href="#krokiとは"></a>Krokiとは</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://kroki.io/" class="bare">https://kroki.io/</a></p>
@@ -120,9 +120,9 @@
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="plantuml"><a class="anchor" href="#plantuml"></a>plantuml</h3>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>skinparam monochrome true
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">skinparam monochrome true
 skinparam ranksep 20
 skinparam dpi 150
 skinparam arrowThickness 0.7
@@ -146,7 +146,7 @@ rectangle "&lt;b&gt;main.ts&lt;/b&gt;" as main_ts
 main_ts ==&gt; (main.view)
 (main.view) --&gt; (component)
 (main.view) ...&gt; (singleton)
-(singleton) ---&gt; (model)</pre>
+(singleton) ---&gt; (model)</code></pre>
 </div>
 </div>
 <div class="imageblock kroki">
