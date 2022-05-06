@@ -1,7 +1,7 @@
 
 = Antora
 
-== Antoraって？
+== Antoraって
 
 asciidocで記述されたドキュメントの静的サイト生成ツール。
 
@@ -9,7 +9,7 @@ https://gitlab.com/antora/antora
 
 == お勧めの使い方
 
-ディレクトリ構成と定義ファイルを次に示すとおり作れば最低限利用可能。
+ディレクトリ構成と定義ファイルを次に示すとおり作れば最低限は利用出来る。
 
 === リポジトリ構成
 
@@ -87,11 +87,11 @@ ui:
 
 == antora-lunr-extension
 
-=== 日本語検索が出来ない・・・
+=== 日本語検索が出来ない
 
 https://gitlab.com/antora/antora-lunr-extension/-/issues/45
 
-issue登録と対策コードのMRを作った! さて、受け入れてもらえるか？？？
+「issue登録と対策コードのMRを作った」さて、受け入れてもらえるか。
 
 == ui template
 

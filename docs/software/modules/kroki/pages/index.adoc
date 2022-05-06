@@ -1,12 +1,14 @@
 # Kroki
 
-## Krokiとは？
+## Krokiとは
 
 https://kroki.io/
 
 ## サンプル
 
 ### plantuml
+
+[source]
 ....
 skinparam monochrome true
 skinparam ranksep 20
