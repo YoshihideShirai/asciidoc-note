@@ -18,12 +18,15 @@ fi
 
 apk add sudo git
 
+## Waiting for official release which is fixed the bug following...
+## https://gitlab.com/antora/antora-lunr-extension/-/merge_requests/75
 if [ ! -d /npm/antora-lunr-extension ]; then
     mkdir /npm
     cd /npm
-    git clone -b bugfix-lunr-language-ja-doesnt-work https://gitlab.com/yoshihide.shirai/antora-lunr-extension.git
+    git clone -b main https://gitlab.com/antora/antora-lunr-extension.git
     cd antora-lunr-extension
     npm i
+    npm run build
     cd $WORKDIR
 fi
 

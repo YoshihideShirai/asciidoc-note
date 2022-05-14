@@ -6,5 +6,3 @@ docker run \
     -v $PWD:/antora:Z \
     --workdir /antora \
     --rm -t --entrypoint=/antora/docker-entrypoint.sh antora/antora:3.0.1
-
-#    -v $PWD/../antora-lunr-extension:/npm/antora-lunr-extension \

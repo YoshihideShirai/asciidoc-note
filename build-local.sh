@@ -7,4 +7,5 @@ docker run \
     --workdir /antora \
     --rm -t --entrypoint=/antora/docker-entrypoint.sh antora/antora:3.0.1 antora-playbook-local.yml
 
+## for lunr extentsion debug
 #    -v $PWD/../antora-lunr-extension:/npm/antora-lunr-extension \

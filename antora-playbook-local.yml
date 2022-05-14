@@ -26,5 +26,3 @@ ui:
   bundle:
     url: ./ui-bundle/
     snapshot: true
-  supplemental_files: /npm/antora-lunr-extension/supplemental_ui
-#  supplemental_files: /usr/local/share/.config/yarn/global/node_modules/@antora/lunr-extension/supplemental_ui
