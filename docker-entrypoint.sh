@@ -16,22 +16,9 @@ if [ -z $ANTORA_GID ]; then
     ANTORA_GID=0
 fi
 
-apk add sudo git
+apk add sudo
 
-## Waiting for official release which is fixed the bug following...
-## https://gitlab.com/antora/antora-lunr-extension/-/merge_requests/75
-if [ ! -d /npm/antora-lunr-extension ]; then
-    mkdir /npm
-    cd /npm
-    git clone -b main https://gitlab.com/antora/antora-lunr-extension.git
-    cd antora-lunr-extension
-    npm i
-    npm run build
-    cd $WORKDIR
-fi
-
-yarn global add asciidoctor-kroki /npm/antora-lunr-extension/ asciidoctor-emoji
-# @antora/lunr-extension
+yarn global add asciidoctor-kroki asciidoctor-emoji @antora/lunr-extension
 
 sudo -u#${ANTORA_UID} -g#${ANTORA_GID} \
     antora "${PLAYBOOK}"
