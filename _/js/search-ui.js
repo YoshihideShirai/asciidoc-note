@@ -4,112 +4,108 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.antoraSearch = {}));
 })(this, (function (exports) { 'use strict';
 
-  function highlightText (doc, position, snippetLength) {
-    const nodes = [];
-    const start = position[0];
-    const length = position[1];
+  function buildHighlightedText (text, positions, snippetLength) {
+    const textLength = text.length;
+    const validPositions = positions
+      .filter((position) => position.length > 0 && position.start + position.length <= textLength);
 
-    const text = doc.text;
-    const highlightMark = {
-      type: 'mark',
-      text: text.substr(start, length),
+    if (validPositions.length === 0) {
+      return [
+        {
+          type: 'text',
+          text: text.slice(0, snippetLength >= textLength ? textLength : snippetLength) + (snippetLength < textLength ? '...' : ''),
+        },
+      ]
+    }
+
+    const orderedPositions = validPositions.sort((p1, p2) => p1.start - p2.start);
+    const range = {
+      start: 0,
+      end: textLength,
     };
+    const firstPosition = orderedPositions[0];
+    if (snippetLength && text.length > snippetLength) {
+      const firstPositionStart = firstPosition.start;
+      const firstPositionLength = firstPosition.length;
+      const firstPositionEnd = firstPositionStart + firstPositionLength;
 
-    const end = start + length;
-    const textEnd = text.length - 1;
-    const contextAfter = end + snippetLength > textEnd ? textEnd : end + snippetLength;
-    const contextBefore = start - snippetLength < 0 ? 0 : start - snippetLength;
-    if (start === 0 && end === textEnd) {
-      nodes.push(highlightMark);
-    } else if (start === 0) {
-      nodes.push(highlightMark);
+      range.start = firstPositionStart - snippetLength < 0 ? 0 : firstPositionStart - snippetLength;
+      range.end = firstPositionEnd + snippetLength > textLength ? textLength : firstPositionEnd + snippetLength;
+    }
+    const nodes = [];
+    if (firstPosition.start > 0) {
       nodes.push({
         type: 'text',
-        text: text.substr(end, contextAfter),
-      });
-    } else if (end === textEnd) {
-      nodes.push({
-        type: 'text',
-        text: text.substr(0, start),
-      });
-      nodes.push(highlightMark);
-    } else {
-      nodes.push({
-        type: 'text',
-        text: '...' + (text.substr(contextBefore, start - contextBefore)),
-      });
-      nodes.push(highlightMark);
-      nodes.push({
-        type: 'text',
-        text: (text.substr(end, contextAfter - end)) + '...',
+        text: (range.start > 0 ? '...' : '') + text.slice(range.start, firstPosition.start),
       });
     }
+    let lastEndPosition = 0;
+    const positionsWithinRange = orderedPositions
+      .filter((position) => position.start >= range.start && position.start + position.length <= range.end);
+
+    for (const position of positionsWithinRange) {
+      const start = position.start;
+      const length = position.length;
+      const end = start + length;
+      if (lastEndPosition > 0) {
+        // create text Node from the last end position to the start of the current position
+        nodes.push({
+          type: 'text',
+          text: text.slice(lastEndPosition, start),
+        });
+      }
+      nodes.push({
+        type: 'mark',
+        text: text.slice(start, end),
+      });
+      lastEndPosition = end;
+    }
+    if (lastEndPosition < range.end) {
+      nodes.push({
+        type: 'text',
+        text: text.slice(lastEndPosition, range.end) + (range.end < textLength ? '...' : ''),
+      });
+    }
+
     return nodes
   }
 
-  function highlightTitle (sectionTitle, doc, position) {
-    const nodes = [];
-    const start = position[0];
-    const length = position[1];
+  /**
+   * Taken and adapted from: https://github.com/olivernn/lunr.js/blob/aa5a878f62a6bba1e8e5b95714899e17e8150b38/lib/tokenizer.js#L24-L67
+   * @param lunr
+   * @param text
+   * @param term
+   * @return {{start: number, length: number}}
+   */
+  function findTermPosition (lunr, term, text) {
+    const str = text.toLowerCase();
+    const len = str.length;
 
-    let title;
-    if (sectionTitle) {
-      title = sectionTitle.text;
-    } else {
-      title = doc.title;
-    }
-    const highlightMark = {
-      type: 'mark',
-      text: title.substr(start, length),
-    };
+    for (let sliceEnd = 0, sliceStart = 0; sliceEnd <= len; sliceEnd++) {
+      const char = str.charAt(sliceEnd);
+      const sliceLength = sliceEnd - sliceStart;
 
-    const end = start + length;
-    const titleEnd = title.length - 1;
-    if (start === 0 && end === titleEnd) {
-      nodes.push(highlightMark);
-    } else if (start === 0) {
-      nodes.push(highlightMark);
-      nodes.push({
-        type: 'text',
-        text: title.substr(length, titleEnd),
-      });
-    } else if (end === titleEnd) {
-      nodes.push({
-        type: 'text',
-        text: title.substr(0, start),
-      });
-      nodes.push(highlightMark);
-    } else {
-      nodes.push({
-        type: 'text',
-        text: title.substr(0, start),
-      });
-      nodes.push(highlightMark);
-      nodes.push({
-        type: 'text',
-        text: title.substr(end, titleEnd),
-      });
-    }
-    return nodes
-  }
-
-  function highlightHit (searchMetadata, sectionTitle, doc, snippetLength) {
-    let nodes = [];
-    for (const token in searchMetadata) {
-      const fields = searchMetadata[token];
-      for (const field in fields) {
-        const positions = fields[field];
-        if (positions.position) {
-          const position = positions.position[0]; // only higlight the first match
-          if (field === 'title') {
-            nodes = highlightTitle(sectionTitle, doc, position);
-          } else if (field === 'text') {
-            nodes = highlightText(doc, position, snippetLength);
+      if ((char.match(lunr.tokenizer.separator) || sliceEnd === len)) {
+        if (sliceLength > 0) {
+          const value = str.slice(sliceStart, sliceEnd);
+          // QUESTION: if we get an exact match without running the pipeline should we stop?
+          if (value.includes(term)) {
+            // returns the first match
+            return {
+              start: sliceStart,
+              length: value.length,
+            }
           }
         }
+        sliceStart = sliceEnd + 1;
       }
     }
-    return nodes
+
+    // not found!
+    return {
+      start: 0,
+      length: 0,
+    }
   }
 
   /* global CustomEvent, globalThis */
@@ -119,9 +115,9 @@
   const siteRootPath = config.siteRootPath || '';
   appendStylesheet(config.stylesheet);
   const searchInput = document.getElementById('search-input');
-  const searchResult = document.createElement('div');
-  searchResult.classList.add('search-result-dropdown-menu');
-  searchInput.parentNode.appendChild(searchResult);
+  const searchResultContainer = document.createElement('div');
+  searchResultContainer.classList.add('search-result-dropdown-menu');
+  searchInput.parentNode.appendChild(searchResultContainer);
   const facetFilterInput = document.querySelector('#search-field input[type=checkbox][data-facet-filter]');
 
   function appendStylesheet (href) {
@@ -132,11 +128,59 @@
     document.head.appendChild(link);
   }
 
+  function highlightPageTitle (title, terms) {
+    const positions = getTermPosition(title, terms);
+    return buildHighlightedText(title, positions, snippetLength)
+  }
+
+  function highlightSectionTitle (sectionTitle, terms) {
+    if (sectionTitle) {
+      const text = sectionTitle.text;
+      const positions = getTermPosition(text, terms);
+      return buildHighlightedText(text, positions, snippetLength)
+    }
+    return []
+  }
+
+  function highlightText (doc, terms) {
+    const text = doc.text;
+    const positions = getTermPosition(text, terms);
+    return buildHighlightedText(text, positions, snippetLength)
+  }
+
+  function getTermPosition (text, terms) {
+    const positions = terms
+      .map((term) => findTermPosition(globalThis.lunr, term, text))
+      .filter((position) => position.length > 0)
+      .sort((p1, p2) => p1.start - p2.start);
+
+    if (positions.length === 0) {
+      return []
+    }
+    return positions
+  }
+
+  function highlightHit (searchMetadata, sectionTitle, doc) {
+    const terms = {};
+    for (const term in searchMetadata) {
+      const fields = searchMetadata[term];
+      for (const field in fields) {
+        terms[field] = [...(terms[field] || []), term];
+      }
+    }
+    return {
+      pageTitleNodes: highlightPageTitle(doc.title, terms.title || []),
+      sectionTitleNodes: highlightSectionTitle(sectionTitle, terms.title || []),
+      pageContentNodes: highlightText(doc, terms.text || []),
+    }
+  }
+
   function createSearchResult (result, store, searchResultDataset) {
+    let currentComponent;
     result.forEach(function (item) {
       const ids = item.ref.split('-');
       const docId = ids[0];
-      const doc = store[docId];
+      const doc = store.documents[docId];
       let sectionTitle;
       if (ids.length > 1) {
         const titleId = ids[1];
@@ -145,21 +189,57 @@
         })[0];
       }
       const metadata = item.matchData.metadata;
-      const nodes = highlightHit(metadata, sectionTitle, doc, snippetLength);
-      searchResultDataset.appendChild(createSearchResultItem(doc, sectionTitle, item, nodes));
+      const highlightingResult = highlightHit(metadata, sectionTitle, doc);
+      const componentVersion = store.componentVersions[`${doc.component}/${doc.version}`];
+      if (componentVersion !== undefined && currentComponent !== componentVersion) {
+        const searchResultComponentHeader = document.createElement('div');
+        searchResultComponentHeader.classList.add('search-result-component-header');
+        const { title, displayVersion } = componentVersion;
+        const componentVersionText = `${title}${doc.version && displayVersion ? ` ${displayVersion}` : ''}`;
+        searchResultComponentHeader.appendChild(document.createTextNode(componentVersionText));
+        searchResultDataset.appendChild(searchResultComponentHeader);
+        currentComponent = componentVersion;
+      }
+      searchResultDataset.appendChild(createSearchResultItem(doc, sectionTitle, item, highlightingResult));
     });
   }
 
-  function createSearchResultItem (doc, sectionTitle, item, nodes) {
+  function createSearchResultItem (doc, sectionTitle, item, highlightingResult) {
     const documentTitle = document.createElement('div');
     documentTitle.classList.add('search-result-document-title');
-    documentTitle.innerText = doc.title;
+    highlightingResult.pageTitleNodes.forEach(function (node) {
+      let element;
+      if (node.type === 'text') {
+        element = document.createTextNode(node.text);
+      } else {
+        element = document.createElement('span');
+        element.classList.add('search-result-highlight');
+        element.innerText = node.text;
+      }
+      documentTitle.appendChild(element);
+    });
     const documentHit = document.createElement('div');
     documentHit.classList.add('search-result-document-hit');
     const documentHitLink = document.createElement('a');
     documentHitLink.href = siteRootPath + doc.url + (sectionTitle ? '#' + sectionTitle.hash : '');
     documentHit.appendChild(documentHitLink);
-    nodes.forEach(function (node) {
+    if (highlightingResult.sectionTitleNodes.length > 0) {
+      const documentSectionTitle = document.createElement('div');
+      documentSectionTitle.classList.add('search-result-section-title');
+      documentHitLink.appendChild(documentSectionTitle);
+      highlightingResult.sectionTitleNodes.forEach(function (node) {
+        let element;
+        if (node.type === 'text') {
+          element = document.createTextNode(node.text);
+        } else {
+          element = document.createElement('span');
+          element.classList.add('search-result-highlight');
+          element.innerText = node.text;
+        }
+        documentSectionTitle.appendChild(element);
+      });
+    }
+    highlightingResult.pageContentNodes.forEach(function (node) {
       let element;
       if (node.type === 'text') {
         element = document.createTextNode(node.text);
@@ -194,24 +274,24 @@
 
   function clearSearchResults (reset) {
     if (reset === true) searchInput.value = '';
-    searchResult.innerHTML = '';
+    searchResultContainer.innerHTML = '';
   }
 
-  function filter (result, store) {
+  function filter (result, documents) {
     const facetFilter = facetFilterInput && facetFilterInput.checked && facetFilterInput.dataset.facetFilter;
     if (facetFilter) {
       const [field, value] = facetFilter.split(':');
       return result.filter((item) => {
         const ids = item.ref.split('-');
         const docId = ids[0];
-        const doc = store[docId];
+        const doc = documents[docId];
         return field in doc && doc[field] === value
       })
     }
     return result
   }
 
-  function search (index, store, queryString) {
+  function search (index, documents, queryString) {
     // execute an exact match search
     let query;
     let result = filter(
@@ -220,7 +300,7 @@
         parser.parse();
         query = lunrQuery;
       }),
-      store
+      documents
     );
     if (result.length > 0) {
       return result
@@ -237,7 +317,7 @@
           return clause
         });
       }),
-      store
+      documents
     );
     if (result.length > 0) {
       return result
@@ -254,7 +334,7 @@
           return clause
         });
       }),
-      store
+      documents
     );
     return result
   }
@@ -264,10 +344,10 @@
     if (text.trim() === '') {
       return
     }
-    const result = search(index, store, text);
+    const result = search(index, store.documents, text);
     const searchResultDataset = document.createElement('div');
     searchResultDataset.classList.add('search-result-dataset');
-    searchResult.appendChild(searchResultDataset);
+    searchResultContainer.appendChild(searchResultDataset);
     if (result.length > 0) {
       createSearchResult(result, store, searchResultDataset);
     } else {
@@ -296,12 +376,15 @@
   }
 
   function enableSearchInput (enabled) {
+    if (facetFilterInput) {
+      facetFilterInput.disabled = !enabled;
+    }
     searchInput.disabled = !enabled;
     searchInput.title = enabled ? '' : 'Loading index...';
   }
 
   function isClosed () {
-    return searchResult.childElementCount === 0
+    return searchResultContainer.childElementCount === 0
   }
 
   function executeSearch (index) {
@@ -311,7 +394,13 @@
       if (!query) return clearSearchResults()
       searchIndex(index.index, index.store, query);
     } catch (err) {
-      if (debug) console.debug('Invalid search query: ' + query + ' (' + err.message + ')');
+      if (err instanceof globalThis.lunr.QueryParseError) {
+        if (debug) {
+          console.debug('Invalid search query: ' + query + ' (' + err.message + ')');
+        }
+      } else {
+        console.error('Something went wrong while searching', err);
+      }
     }
   }
 
@@ -341,7 +430,7 @@
       }, 100)
     );
     searchInput.addEventListener('click', confineEvent);
-    searchResult.addEventListener('click', confineEvent);
+    searchResultContainer.addEventListener('click', confineEvent);
     if (facetFilterInput) {
       facetFilterInput.parentElement.addEventListener('click', confineEvent);
       facetFilterInput.addEventListener('change', (e) => toggleFilter(e, index));
